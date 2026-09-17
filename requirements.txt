@@ -1,0 +1,26 @@
+# ThermalEngineLite - Dependencias Python
+
+# Qt GUI (render DMD/HDMI; funciona en modo offscreen sin display)
+PySide6>=6.5.0
+
+# Procesado de imagen (render LCD/Web)
+Pillow>=10.0.0
+
+# Monitorizacion del sistema
+psutil>=5.9.0
+
+# Servidor web (push de temas + preview)
+Flask>=3.0.0
+werkzeug>=3.0.0
+
+# LCD USB (Thermalright Trofeo)
+hidapi>=0.14.0
+pyusb>=1.2.1
+
+# Video background (opcional)
+opencv-python>=4.8.0
+numpy>=1.24.0
+
+# --- Solo Linux (opcional) -------------------------------------------------
+# Sensores de GPU NVIDIA via NVML; si falta se usa 'nvidia-smi'.
+nvidia-ml-py>=12.0.0 ; sys_platform == "linux"

@@ -1,0 +1,62 @@
+[project]
+name = "thermal-engine-lite"
+version = "0.10.0"
+description = "Runtime de monitorizacion headless (LCD/DMD/HDMI/Web) para temas de Thermal-Engine-Studio"
+requires-python = ">=3.10"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "sito1982", email = "sito1982@gmail.com" }]
+keywords = ["thermal", "monitoring", "dmd", "lcd", "sensors", "headless", "docker"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: System :: Monitoring",
+]
+
+[project.urls]
+Homepage = "https://github.com/sito1982/Thermal-Engine-Lite"
+Repository = "https://github.com/sito1982/Thermal-Engine-Lite"
+"Thermal Engine Studio" = "https://github.com/sito1982/Thermal-Engine-Linux"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+# Modulos copiados tal cual de Thermal-Engine-Studio (nucleo de render/salida).
+# No se reformatean para mantener la paridad con el proyecto original.
+extend-exclude = [
+    "canvas.py",
+    "actions.py",
+    "app_path.py",
+    "constants.py",
+    "security.py",
+    "element.py",
+    "lcds.py",
+    "monitors.py",
+    "diag_ly.py",
+    "device_dmd.py",
+    "device_hdmi.py",
+    "device_ly.py",
+    "dmd_font.py",
+    "dmd_screens.py",
+    "dmd_transitions.py",
+    "dmd_widgets.py",
+    "hwinfo_reader.py",
+    "lcd_widgets.py",
+    "touch_nav.py",
+    "linux_sensors.py",
+    "sensors.py",
+    "ui_style.py",
+    "video_background.py",
+    "elements/**",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]

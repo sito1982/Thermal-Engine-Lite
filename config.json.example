@@ -1,0 +1,32 @@
+{
+  "theme_path": "/data/theme.json",
+  "watch_theme": true,
+  "watch_interval_s": 2.0,
+  "targets": {
+    "web": true,
+    "lcd": false,
+    "dmd": true,
+    "hdmi": false
+  },
+  "web_host": "0.0.0.0",
+  "web_port": 4241,
+  "web_token": "cambia-este-token",
+  "target_fps": 24,
+  "overdrive_mode": false,
+  "vertical_mode": false,
+  "lcd_brightness": 1.0,
+  "lcd_contrast": 1.2,
+  "lcd_saturation": 1.25,
+  "lcd_model": "trofeo_9_16",
+  "dmd_config": {
+    "ip": "192.168.1.66",
+    "port": 8889,
+    "width": 128,
+    "height": 32,
+    "fps": 12,
+    "model_id": "dmd_128_32"
+  },
+  "hdmi_config": null,
+  "hdmi_fps": 24,
+  "log_level": "INFO"
+}

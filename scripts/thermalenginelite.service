@@ -1,0 +1,22 @@
+[Unit]
+Description=ThermalEngineLite (runtime de monitorizacion headless)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Se ejecuta como root para poder leer RAPL (/sys/class/powercap/.../energy_uj,
+# modo 0400). Las temperaturas/ventiladores (/sys/class/hwmon) son legibles sin
+# privilegios, pero el consumo de CPU requiere root.
+User=root
+WorkingDirectory=/opt/ThermalEngineLite
+Environment=QT_QPA_PLATFORM=offscreen
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/opt/ThermalEngineLite/.venv/bin/python /opt/ThermalEngineLite/main.py --config /opt/ThermalEngineLite/data/config.json
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

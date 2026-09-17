@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Thermal Engine - Config</title>
+  <style>
+    body { background:#222; color:#eee; font-family:system-ui, sans-serif; margin:0; padding:16px }
+    .container { max-width:1100px; margin:0 auto }
+    header { display:flex; align-items:center; gap:12px }
+    img#lcd { width:100%; max-width:960px; border:1px solid #444; display:block; background:#000 }
+    .controls { margin-top:12px; display:flex; gap:12px; align-items:center; flex-wrap:wrap }
+    label { display:inline-flex; gap:8px; align-items:center }
+    select, input[type=number] { background:#333; color:#eee; border:1px solid #444; padding:6px }
+    button { background:#0a84ff; color:white; border:none; padding:8px 12px; border-radius:6px }
+    a.back { color:#888; text-decoration:none; font-size:14px }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h2>LCD Mirror</h2>
+      <a class="back" href="/" style="margin-left:auto" title="Back to preview">&larr; Preview</a>
+    </header>
+
+    <img id="lcd" src="/image.jpg" alt="LCD preview">
+
+    <div class="controls">
+      <div style="margin-left:auto">Polling interval: <input id="interval" type="number" min="50" max="2000" step="50"> ms</div>
+    </div>
+
+    <div class="controls">
+      <label><input id="copyCheck" type="checkbox"> Copy design to editor</label>
+
+      <label>Preset:
+        <select id="presetSelect"><option>Loading...</option></select>
+      </label>
+
+      <button id="applyBtn">Apply preset now</button>
+      <span id="status" style="margin-left:8px;color:#9fc"> </span>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    const img = document.getElementById('lcd');
+    const intervalInput = document.getElementById('interval');
+    const copyCheck = document.getElementById('copyCheck');
+    const presetSelect = document.getElementById('presetSelect');
+    const applyBtn = document.getElementById('applyBtn');
+    const status = document.getElementById('status');
+
+    let pollMs = 200;
+    intervalInput.value = pollMs;
+    intervalInput.addEventListener('change', ()=>{
+      const v = parseInt(intervalInput.value,10)||200; pollMs = Math.max(50,Math.min(2000,v));
+    });
+
+    // Load presets
+    fetch('/presets').then(r=>r.json()).then(list=>{
+      presetSelect.innerHTML = '';
+      list.forEach(name=>{
+        const opt = document.createElement('option'); opt.value = name; opt.textContent = name; presetSelect.appendChild(opt);
+      });
+    }).catch(()=>{
+      presetSelect.innerHTML = '<option>error</option>';
+    });
+
+    applyBtn.addEventListener('click', ()=>{
+      const name = presetSelect.value;
+      if(!name) return;
+      fetch('/apply_preset', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({preset_name:name})})
+        .then(r=>r.json()).then(j=>{ status.textContent='applied'; setTimeout(()=>status.textContent='',900); })
+        .catch(()=>{ status.textContent='error'; setTimeout(()=>status.textContent='',900); });
+    });
+
+    // If copyCheck is enabled and preset changes, auto apply
+    presetSelect.addEventListener('change', ()=>{
+      if(copyCheck.checked){ applyBtn.click(); }
+    });
+
+    // Polling loop that refreshes image with cache-busting
+    let last = 0;
+    async function poll(){
+      try{
+        const url = '/image.jpg?ts=' + Date.now();
+        img.src = url;
+      }catch(e){ console.log('poll err',e); }
+      setTimeout(poll,pollMs);
+    }
+    poll();
+  })();
+  </script>
+</body>
+</html>

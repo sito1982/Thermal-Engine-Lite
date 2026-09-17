@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Thermal Engine</title>
+  <style>
+    html,body{height:100%;margin:0;background:#000}
+    .stage{display:flex;align-items:center;justify-content:center;height:100vh;padding:8px;box-sizing:border-box}
+    img#lcd{max-width:100%;max-height:100%;width:auto;height:auto;display:block;background:#000}
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <img id="lcd" src="/image.jpg" alt="LCD preview">
+  </div>
+  <script>
+  (function(){
+    const img = document.getElementById('lcd');
+    const pollMs = 200;
+    let last = 0;
+    async function poll(){
+      try{
+        img.src = '/image.jpg?ts=' + Date.now();
+      }catch(e){ console.log('poll err',e); }
+      setTimeout(poll,pollMs);
+    }
+    poll();
+  })();
+  </script>
+</body>
+</html>

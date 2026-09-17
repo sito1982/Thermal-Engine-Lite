@@ -1,0 +1,12 @@
+# ThermalEngineLite - dependencias para despliegue en servidor (host Proxmox)
+#
+# Instalacion ligera para salidas Web y DMD en un host headless con Qt offscreen.
+# NO incluye opencv (solo fondos de video), hidapi/pyusb (LCD USB) ni
+# nvidia-ml-py (GPU). Anade esos extras si algun dia usas esas funciones.
+
+PySide6>=6.5.0
+Pillow>=10.0.0
+psutil>=5.9.0
+Flask>=3.0.0
+werkzeug>=3.0.0
+numpy>=1.24.0

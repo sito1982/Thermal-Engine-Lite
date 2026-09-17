@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Configuracion local (los temas y secretos no se versionan)
+config.json
+data/
+/data/
+*.log
+*.tmp
+.serena/
+
+# Presets generados por el usuario (los incluidos se fuerzan aparte)
+presets/*.png
+
+# Editores / sistema
+.vscode/
+.idea/
+.DS_Store

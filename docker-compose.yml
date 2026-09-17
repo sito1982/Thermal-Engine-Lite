@@ -1,0 +1,33 @@
+services:
+  thermalenginelite:
+    build: .
+    image: thermalenginelite:latest
+    container_name: thermalenginelite
+    restart: unless-stopped
+    # Necesario para que el contenedor alcance el panel DMD por TCP y que el
+    # host sea alcanzable para el push de temas.
+    network_mode: host
+    environment:
+      - QT_QPA_PLATFORM=offscreen
+      - TE_THEME=/data/theme.json
+      - TE_TARGETS=web,dmd
+      - TE_WEB_PORT=4241
+      - TE_WEB_TOKEN=cambia-este-token
+      - TE_DMD_IP=192.168.1.66
+      - TE_DMD_SIZE=128x32
+    volumes:
+      - ./data:/data
+    # --- Sensores reales del host (descomentar segun necesidades) ------------
+    # privileged: true
+    # volumes (ademas de /data):
+    #   - /sys/class/hwmon:/sys/class/hwmon:ro
+    #   - /sys/class/powercap:/sys/class/powercap:ro
+    #   - /proc:/proc:ro
+    # --- LCD USB Thermalright (comentar network_mode si se usa esto) --------
+    # devices:
+    #   - /dev/bus/usb:/dev/bus/usb
+    # --- HDMI en un terminal con servidor grafico ---------------------------
+    # environment extra:
+    #   - DISPLAY=${DISPLAY}
+    # volumes:
+    #   - /tmp/.X11-unix:/tmp/.X11-unix
