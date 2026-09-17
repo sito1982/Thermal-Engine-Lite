@@ -15,6 +15,7 @@ DEFAULT_CONFIG = {
     "theme_path": "/data/theme.json",
     "watch_theme": True,          # recargar si cambia el mtime del archivo
     "watch_interval_s": 2.0,
+    "theme_backups": 5,           # copias del tema en theme.bak/ (rotativo)
 
     # Destinos activos
     "targets": {"web": True, "lcd": False, "dmd": True, "hdmi": False},
@@ -89,6 +90,8 @@ def _env_overrides(env):
         out["lcd_model"] = env["TE_LCD_MODEL"]
     if env.get("TE_WATCH") is not None:
         out["watch_theme"] = env["TE_WATCH"].lower() not in ("0", "false", "no")
+    if env.get("TE_THEME_BACKUPS") is not None:
+        out["theme_backups"] = int(env["TE_THEME_BACKUPS"])
 
     dmd = {}
     if env.get("TE_DMD_IP"):

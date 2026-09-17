@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.11.0
+
+Backups del tema y push sin persistir.
+
+### Añadido
+- **Backup rotativo**: antes de sobrescribir `theme_path`, el tema actual se copia
+  a `theme.bak/<fecha>-<nombre>.json`, conservando los ultimos N (config
+  `theme_backups`, def. 5; env `TE_THEME_BACKUPS`).
+- **`POST /theme?persist=0`**: aplica el tema **sin guardarlo** (previews/pruebas);
+  la respuesta indica `persisted: false`.
+
 ## 0.10.0
 
 El tema recibido por push se persiste como predeterminado.

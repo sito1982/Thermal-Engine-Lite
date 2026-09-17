@@ -58,3 +58,29 @@ def test_persist_without_theme_path(qapp):
         assert error
     finally:
         runtime.stop()
+
+
+def test_backup_created_and_rotated(qapp, tmp_path):
+    path = tmp_path / "theme.json"
+    runtime = _runtime(str(path))
+    try:
+        runtime.config["theme_backups"] = 2
+        for i in range(4):
+            theme = dict(THEME, name=f"T{i}")
+            runtime.load_theme_dict(theme, source="push")
+        bak = tmp_path / "theme.bak"
+        backups = sorted(bak.glob("*.json"))
+        # 4 pushes -> se respalda antes de cada uno menos el primero; rota a 2.
+        assert len(backups) == 2
+    finally:
+        runtime.stop()
+
+
+def test_persist_false_does_not_write(qapp, tmp_path):
+    path = str(tmp_path / "theme.json")
+    runtime = _runtime(path)
+    try:
+        runtime.load_theme_dict(THEME, source="push", persist=False)
+        assert not os.path.exists(path)
+    finally:
+        runtime.stop()

@@ -236,8 +236,13 @@ def push_theme():
         return jsonify(success=False, error="invalid theme",
                        details=errors[:10]), 422
 
+    # `?persist=0` aplica el tema sin guardarlo (previews/pruebas).
+    persist = str(request.args.get("persist", "1")).lower() not in (
+        "0", "false", "no", "off")
+
     result, err = run_on_qt_and_wait(
-        lambda: _RUNTIME.load_theme_dict(data, source="push"), timeout=15.0)
+        lambda: _RUNTIME.load_theme_dict(data, source="push", persist=persist),
+        timeout=15.0)
     if err:
         return jsonify(success=False, error=err), 500
 

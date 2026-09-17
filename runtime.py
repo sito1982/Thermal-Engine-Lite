@@ -8,6 +8,7 @@ servir los frames y el que aplica los temas recibidos por push.
 
 import json
 import os
+import shutil
 import socket
 import time
 
@@ -222,9 +223,40 @@ class ThemeRuntime(QObject):
             self.persist_theme(data)
         return theme
 
+    def _backup_theme_file(self, path):
+        """Copia el ``theme_path`` actual a ``theme.bak/`` rotando los ultimos N.
+
+        Asi una sobrescritura accidental (un push no deseado) es recuperable.
+        """
+        keep = int(self.config.get("theme_backups", 5) or 0)
+        if keep <= 0 or not os.path.exists(path):
+            return
+        try:
+            bak_dir = os.path.join(os.path.dirname(os.path.abspath(path)),
+                                   "theme.bak")
+            os.makedirs(bak_dir, exist_ok=True)
+            stem = os.path.splitext(os.path.basename(path))[0]
+            stamp = time.strftime("%Y%m%d-%H%M%S")
+            dest = os.path.join(bak_dir, f"{stamp}-{stem}.json")
+            if os.path.exists(dest):
+                dest = os.path.join(bak_dir, f"{stamp}-{stem}-{os.getpid()}.json")
+            shutil.copy2(path, dest)
+            backups = sorted(
+                (os.path.join(bak_dir, name) for name in os.listdir(bak_dir)
+                 if name.endswith(".json")),
+                key=os.path.getmtime)
+            for old in backups[:-keep]:
+                try:
+                    os.remove(old)
+                except OSError:
+                    pass
+        except Exception as e:
+            print(f"[Runtime] No se pudo respaldar el tema: {e}")
+
     def persist_theme(self, data):
         """Guarda el tema (JSON tal cual) en ``theme_path`` de forma atomica.
 
+        Antes de sobrescribir, respalda el tema actual en ``theme.bak/``.
         Devuelve ``(ok, error)``. Si no hay ``theme_path`` o falla la escritura,
         el tema sigue aplicado en memoria y solo se registra un aviso.
         """
@@ -237,6 +269,7 @@ class ThemeRuntime(QObject):
             directory = os.path.dirname(os.path.abspath(path))
             if directory:
                 os.makedirs(directory, exist_ok=True)
+            self._backup_theme_file(path)
             tmp_path = f"{path}.tmp"
             with open(tmp_path, "w", encoding="utf-8") as handle:
                 json.dump(data, handle, indent=2, ensure_ascii=False)
